@@ -1,0 +1,18 @@
+<idea-plugin>
+    <id>org.cc.mcp-java-source</id>
+    <name>MCP Java Source</name>
+    <!--    <vendor url="https://cc.org">YourCompany</vendor>-->
+
+    <description><![CDATA[
+        MCP extension for obtaining Java class source code <br>
+        Require JetBrains MCP Server
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.mcpServer</depends>
+    <depends>com.intellij.java</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <mcpServer.mcpToolset implementation="org.cc.tool.ClassSourceToolset"/>
+    </extensions>
+</idea-plugin>

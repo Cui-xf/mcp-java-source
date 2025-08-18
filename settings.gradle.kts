@@ -1,0 +1,1 @@
+rootProject.name = "mcp-java-source"
