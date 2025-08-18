@@ -1,8 +1,7 @@
 <idea-plugin>
     <id>org.cc.mcp-java-source</id>
     <name>MCP Java Source</name>
-    <!--    <vendor url="https://cc.org">YourCompany</vendor>-->
-
+    <vendor url="https://cc.org">cc</vendor>
     <description><![CDATA[
         MCP extension for obtaining Java class source code <br>
         Require JetBrains MCP Server
