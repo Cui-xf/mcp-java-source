@@ -1,13 +1,13 @@
-<svg width="1024" height="1024" xmlns="http://www.w3.org/2000/svg" p-id="7062" version="1.1" class="icon" t="1755774770527">
-
+<svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" t="1755774770527" class="icon" version="1.1" p-id="7062">
  <g>
   <title>background</title>
-  <rect fill="none" id="canvas_background" height="802" width="1585" y="-1" x="-1"/>
+  <rect x="-1" y="-1" width="42" height="42" id="canvas_background" fill="none"/>
  </g>
+
  <g>
   <title>Layer 1</title>
-  <path id="svg_1" p-id="7063" fill="#F44336" d="m85.33333,896l768,0l0,-85.33333l-768,0m768,-469.33334l-85.33333,0l0,-128l85.33333,0m0,-85.33333l-682.66666,0l0,426.66667a170.66667,170.66667 0 0 0 170.66666,170.66666l256,0a170.66667,170.66667 0 0 0 170.66667,-170.66666l0,-128l85.33333,0a85.33333,85.33333 0 0 0 85.33334,-85.33334l0,-128a85.33333,85.33333 0 0 0 -85.33334,-85.33333z"/>
-  <text stroke="#000" transform="matrix(42.7723274230957,0,0,4.621565818786621,-16564.627260753186,-2112.791967357276) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_2" y="605.465839" x="396.545464" stroke-width="0" fill="#000000"/>
-  <text stroke="null" transform="matrix(11.738705393769123,0,0,12.423361846558686,-9593.92949671526,-8274.162695621366) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_3" y="734.620336" x="843.999289" stroke-opacity="null" stroke-width="0" fill="#000000">MCP</text>
+  <path stroke="null" d="m1.882353,36.484114l32.719408,0l0,-3.63549l-32.719408,0m32.719408,-19.995194l-3.63549,0l0,-5.453235l3.63549,0m0,-3.63549l-29.083918,0l0,18.177449a7.27098,7.27098 0 0 0 7.270979,7.270979l10.906469,0a7.27098,7.27098 0 0 0 7.27098,-7.270979l0,-5.453235l3.63549,0a3.63549,3.63549 0 0 0 3.63549,-3.63549l0,-5.453235a3.63549,3.63549 0 0 0 -3.63549,-3.63549z" fill="#F44336" p-id="7063" id="svg_1"/>
+  <text fill="#000000" stroke-width="0" x="396.750549" y="605.465839" id="svg_2" font-size="24" font-family="Helvetica, Arial, sans-serif" text-anchor="start" xml:space="preserve" transform="matrix(42.7723274230957,0,0,4.621565818786621,-16564.627260753186,-2112.791967357276) " stroke="#000"/>
+  <text stroke="null" transform="matrix(0.41371559905877575,0,0,0.41371559905877575,28.81951149254401,-19.207428587274244) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_4" y="128.50924" x="-35.126609" fill-opacity="null" stroke-opacity="null" stroke-width="0" fill="#000000">MCP</text>
  </g>
 </svg>
