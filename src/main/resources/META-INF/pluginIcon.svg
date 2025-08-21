@@ -1,12 +1,13 @@
-<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M32.0845 7.94025V4H24.0203V7.9896H16.029V4H7.91553V7.94025H4V36H16.0044V32.0045C16.0058 30.9457 16.4274 29.9308 17.1766 29.1826C17.9258 28.4345 18.9412 28.0143 20 28.0143C21.0588 28.0143 22.0743 28.4345 22.8234 29.1826C23.5726 29.9308 23.9942 30.9457 23.9956 32.0045V36H36V7.94025H32.0845Z"
-          fill="url(#paint0_linear)"/>
-    <defs>
-        <linearGradient id="paint0_linear" x1="2.94192" y1="4.89955" x2="37.7772" y2="39.7345"
-                        gradientUnits="userSpaceOnUse">
-            <stop offset="0.15937" stop-color="#3BEA62"/>
-            <stop offset="0.5404" stop-color="#3C99CC"/>
-            <stop offset="0.93739" stop-color="#6B57FF"/>
-        </linearGradient>
-    </defs>
+<svg width="1024" height="1024" xmlns="http://www.w3.org/2000/svg" p-id="7062" version="1.1" class="icon" t="1755774770527">
+
+ <g>
+  <title>background</title>
+  <rect fill="none" id="canvas_background" height="802" width="1585" y="-1" x="-1"/>
+ </g>
+ <g>
+  <title>Layer 1</title>
+  <path id="svg_1" p-id="7063" fill="#F44336" d="m85.33333,896l768,0l0,-85.33333l-768,0m768,-469.33334l-85.33333,0l0,-128l85.33333,0m0,-85.33333l-682.66666,0l0,426.66667a170.66667,170.66667 0 0 0 170.66666,170.66666l256,0a170.66667,170.66667 0 0 0 170.66667,-170.66666l0,-128l85.33333,0a85.33333,85.33333 0 0 0 85.33334,-85.33334l0,-128a85.33333,85.33333 0 0 0 -85.33334,-85.33333z"/>
+  <text stroke="#000" transform="matrix(42.7723274230957,0,0,4.621565818786621,-16564.627260753186,-2112.791967357276) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_2" y="605.465839" x="396.545464" stroke-width="0" fill="#000000"/>
+  <text stroke="null" transform="matrix(11.738705393769123,0,0,12.423361846558686,-9593.92949671526,-8274.162695621366) " xml:space="preserve" text-anchor="start" font-family="Helvetica, Arial, sans-serif" font-size="24" id="svg_3" y="734.620336" x="843.999289" stroke-opacity="null" stroke-width="0" fill="#000000">MCP</text>
+ </g>
 </svg>
