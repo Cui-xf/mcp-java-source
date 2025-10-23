@@ -1,9 +1,5 @@
-package org.cc.tool
+package org.cc.tool.tool
 
-import com.intellij.mcpserver.McpToolset
-import com.intellij.mcpserver.annotations.McpDescription
-import com.intellij.mcpserver.annotations.McpTool
-import com.intellij.mcpserver.project
 import com.intellij.openapi.application.runReadAction
 import com.intellij.openapi.diagnostic.logger
 import com.intellij.openapi.project.Project
@@ -15,63 +11,95 @@ import com.intellij.psi.PsiClass
 import com.intellij.psi.PsiJavaFile
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.search.PsiShortNamesCache
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonArray
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
+import org.cc.tool.mcp.AbstractTool
+import org.cc.tool.mcp.McpTool
+import org.cc.tool.utils.parse
+import org.jetbrains.ide.RestService
 import java.io.IOException
 
-class ClassSourceToolset : McpToolset {
-    val logger by lazy { logger<ClassSourceToolset>() }
+object ClassSourceToolset : AbstractTool {
+    private val logger = logger<ClassSourceToolset>()
 
-    @McpTool
-    @McpDescription(
-        """
-Searches for class files by class name (supports short class names) and returns the source code. This function supports both local project classes and third-party library classes. For third-party classes without source code, it automatically uses decompilation to retrieve the source code.
-When multiple classes with the same name are encountered, the fully qualified names of all matching classes are returned. To retrieve the source code, call the class_source function again to specify the class name.
-By default, the first 500 lines of the source file are returned. You can specify a lineOffset and lineLimit to retrieve a specific line.
-
-通过类名(支持短类名)查找类文件并返回源码信息。支持项目本地类和第三方库类，对于没有源码的第三方类会自动使用反编译功能获取源码。
-当遇到多个同名类时，回返回所有匹配的类的全限定名，需要通过再次调用class_source指定权限定类名来获取源码
-默认返回源码文件前500行，可以通过指定lineOffset和lineLimit查询指定行
-"""
+    override fun toolInfo() = McpTool(
+        name = "class_source",
+        description = "根据类名搜索并返回 Java 类的源代码。支持短类名搜索，可以指定行偏移和行数限制。",
+        inputSchema = JsonObject(
+            mapOf(
+                "type" to JsonPrimitive("object"),
+                "properties" to JsonObject(
+                    mapOf(
+                        "className" to JsonObject(
+                            mapOf(
+                                "type" to JsonPrimitive("string"),
+                                "description" to JsonPrimitive("类名(支持短类名)")
+                            )
+                        ),
+                        "lineOffset" to JsonObject(
+                            mapOf(
+                                "type" to JsonPrimitive("integer"),
+                                "description" to JsonPrimitive("行号偏移(默认0)"),
+                                "default" to JsonPrimitive(0)
+                            )
+                        ),
+                        "lineLimit" to JsonObject(
+                            mapOf(
+                                "type" to JsonPrimitive("integer"),
+                                "description" to JsonPrimitive("查询行数(默认500)"),
+                                "default" to JsonPrimitive(500)
+                            )
+                        )
+                    )
+                ),
+                "required" to JsonArray(listOf(JsonPrimitive("className")))
+            )
+        )
     )
-    suspend fun class_source(
-        @McpDescription("类名(支持短类名)") className: String,
-        @McpDescription("行号偏移(默认0)") lineOffset: Int = 0,
-        @McpDescription("查询行数(默认500)") lineLimit: Int = 500,
-    ): Response {
-        val project = currentCoroutineContext().project
+
+    override fun execute(arguments: JsonElement?): String {
+        if (arguments == null) {
+            return "无效的参数:className"
+        } else {
+            val (className, lineOffset, lineLimit) = arguments.parse<ClassSourceArgs>()
+            return getClassSource(className, lineOffset, lineLimit)
+        }
+    }
+
+    /**
+     * 获取类源码
+     */
+    private fun getClassSource(className: String, lineOffset: Int = 0, lineLimit: Int = 500): String {
         return runReadAction {
             try {
                 if (className.isEmpty()) {
-                    return@runReadAction Response.error("类名不能为空")
+                    return@runReadAction "类名不能为空"
                 }
-                // 尝试查找\
-                val psiClass = findClassByName(project, className)
+                // 获取当前项目
+                val project = RestService.getLastFocusedOrOpenedProject() ?: return@runReadAction "未找到打开的项目"
+
+                // 尝试查找类
+                val psiClasses = findClassByName(project, className)
                 when {
-                    psiClass.isEmpty() -> return@runReadAction Response.error("未找到类: $className")
-                    psiClass.size == 1 -> {
+                    psiClasses.isEmpty() -> return@runReadAction "未找到类: $className"
+                    psiClasses.size == 1 -> {
                         // 获取源码
-                        val sourceCode = getClassSourceCode(psiClass.first(), project, lineOffset, lineLimit)
-                        return@runReadAction if (sourceCode == null) {
-                            Response.error("无法获取类 $className 的源码")
-                        } else {
-                            Response.success(
-                                "找到类源码", ClassSourceResponse(
-                                    file = psiClass.first().containingFile.virtualFile.path,
-                                    sourceCode = sourceCode
-                                )
-                            )
-                        }
+                        val sourceCode = getClassSourceCode(psiClasses.first(), project, lineOffset, lineLimit)
+                        return@runReadAction sourceCode ?: "无法获取类 $className 的源码"
                     }
 
-                    else -> return@runReadAction Response.success(
-                        "找到多个同名类",
-                        ClassSourceResponse(sameNameClass = psiClass.map { it.qualifiedName })
-                    )
+                    else -> {
+                        // 多个同名类，返回列表
+                        val classNames = psiClasses.mapNotNull { it.qualifiedName }
+                        return@runReadAction "找到多个同名类: ${classNames.joinToString(", ")}"
+                    }
                 }
             } catch (e: Exception) {
                 logger.error("获取类源码时发生错误", e)
-                return@runReadAction Response.error("获取类源码时发生错误: ${e.message}")
+                return@runReadAction "获取类源码时发生错误: ${e.message}"
             }
         }
     }
@@ -94,7 +122,6 @@ By default, the first 500 lines of the source file are returned. You can specify
         }
     }
 
-
     private fun getClassSourceCode(psiClass: PsiClass, project: Project, lineOffset: Int, lineLimit: Int): String? {
         try {
             if (isProjectClass(psiClass, project)) {
@@ -111,7 +138,7 @@ By default, the first 500 lines of the source file are returned. You can specify
 
     // 判断是否是项目中的类
     private fun isProjectClass(psiClass: PsiClass, project: Project): Boolean {
-        val file = psiClass.getContainingFile().getVirtualFile()
+        val file = psiClass.containingFile.virtualFile
         return ProjectFileIndex.getInstance(project).isInSourceContent(file)
     }
 
@@ -144,8 +171,8 @@ By default, the first 500 lines of the source file are returned. You can specify
             for (entry in ProjectFileIndex.getInstance(project).getOrderEntriesForFile(classFile)) {
                 if (entry is LibraryOrderEntry) {
                     // 检查源码附件
-                    val sourceRoots = entry.getFiles(OrderRootType.SOURCES)
-                    if (sourceRoots.size == 0) {
+                    val sourceRoots = entry.getRootFiles(OrderRootType.SOURCES)
+                    if (sourceRoots.isEmpty()) {
                         return null // 无源码附件
                     }
 
@@ -213,24 +240,15 @@ By default, the first 500 lines of the source file are returned. You can specify
             }
         }
     }
+
 }
 
+/**
+ * 类源码工具的参数
+ */
 @Serializable
-data class ClassSourceResponse(
-    val file: String? = null,
-    val sourceCode: String? = null,
-    val sameNameClass: List<String?>? = null,
+data class ClassSourceArgs(
+    val className: String,
+    val lineOffset: Int = 0,
+    val lineLimit: Int = 500
 )
-
-@Serializable
-data class Response(val status: String, val message: String, val data: ClassSourceResponse?) {
-    companion object {
-        fun error(message: String): Response {
-            return Response("error", message, null)
-        }
-
-        fun success(message: String, data: ClassSourceResponse): Response {
-            return Response("success", message, data)
-        }
-    }
-}

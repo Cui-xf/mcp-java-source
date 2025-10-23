@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.cc"
-version = "1.0.2-SNAPSHOT"
+version = "1.0.3-SNAPSHOT"
 
 repositories {
     mavenCentral()
@@ -16,8 +16,8 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        create("IC", "2025.2")
-        bundledPlugin("com.intellij.mcpServer")
+//        create("IC", "2025.2")
+        local("/Applications/IntelliJ IDEA CE.app")
         bundledPlugin("com.intellij.java")
     }
 }

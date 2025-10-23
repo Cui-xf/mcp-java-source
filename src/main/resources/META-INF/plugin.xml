@@ -8,10 +8,10 @@
     ]]></description>
 
     <depends>com.intellij.modules.platform</depends>
-    <depends>com.intellij.mcpServer</depends>
     <depends>com.intellij.java</depends>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <mcpServer.mcpToolset implementation="org.cc.tool.ClassSourceToolset"/>
-    </extensions>
+    <applicationListeners>
+        <listener class="org.cc.tool.PluginEntryPoint"
+                  topic="com.intellij.ide.AppLifecycleListener"/>
+    </applicationListeners>
 </idea-plugin>
